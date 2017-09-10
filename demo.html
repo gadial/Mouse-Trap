@@ -93,6 +93,19 @@ function create() {
 		goal_count++;
 		goals.create(goal.x, goal.y - 16, 'tilesSprites', goal.gid - 1)
 	});
+	
+	sinkingPlatforms = this.add.group();
+	sinkingPlatforms.enableBody = true;
+	var sinkingPlatformsArr = findObjectsByType('sinkingPlatform', map, 'Object Layer');
+	sinkingPlatformsArr.forEach(function(platform){
+		p = sinkingPlatforms.create(platform.x, platform.y - 16, 'tilesSprites', platform.gid - 1)
+		p.body.checkCollision.down = false;
+		p.body.checkCollision.left = false;
+		p.body.checkCollision.right = false;
+		p.body.drag.y = 25;
+		p.body.immovable = true;
+		p.origin_y = p.y;
+	});
 
 	//map.setCollisionBetween(1, 1000, true, 'Solid Layer');
 	map.setCollisionByExclusion([], true, 'Solid Layer');
@@ -158,10 +171,20 @@ function collectGoal(player, goal){
 	console.log(goal_count, " goals remain");
 }
 
+function sinkPlatform(player, platform){
+	if (player.y + 48 <= platform.y){ //check if the legs of the mouse are standing on top of the platform
+		platform.body.velocity.y = 25;
+		if (platform.origin_y + 20 <= platform.y){
+			platform.kill();
+		}
+	}
+}
+
 function update() {
 
 	game.physics.arcade.collide(player, platformLayer);
 	game.physics.arcade.collide(player, solidLayer);
+	game.physics.arcade.collide(player, sinkingPlatforms, sinkPlatform);
 	game.physics.arcade.overlap(player, goals, collectGoal);
 	
 	if (player.body.blocked.down){
@@ -171,7 +194,7 @@ function update() {
     {
 		
         //  Move to the left
-		if (player.body.blocked.down){
+		if (player.body.blocked.down || player.body.touching.down){
 			if (player.body.horizontalFacing == Phaser.RIGHT){
 				player.body.horizontalFacing = Phaser.LEFT;
 				player.body.setSize(26, 48, -10, 0);
@@ -185,7 +208,7 @@ function update() {
     {
 		
         //  Move to the right
-		if (player.body.blocked.down){
+		if (player.body.blocked.down || player.body.touching.down){
 			if (player.body.horizontalFacing == Phaser.LEFT){
 				player.body.horizontalFacing = Phaser.RIGHT;
 				player.body.setSize(26, 48, 30, 0);
@@ -211,7 +234,7 @@ function update() {
 	}		
 	
     //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown && player.body.blocked.down)
+    if (cursors.up.isDown && (player.body.blocked.down || player.body.touching.down))
     {
         player.body.velocity.y = -200;
     }
