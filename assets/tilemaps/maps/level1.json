@@ -314,6 +314,26 @@
                  "width":32,
                  "x":0,
                  "y":272
+                }, 
+                {
+                 "gid":221,
+                 "height":48,
+                 "id":29,
+                 "name":"",
+                 "properties":
+                    {
+                     "type":"player"
+                    },
+                 "propertytypes":
+                    {
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":56,
+                 "x":448,
+                 "y":128
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -343,7 +363,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":27,
+ "nextobjectid":32,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.0.3",
@@ -576,6 +596,10 @@
             },
          "tilewidth":32,
          "transparentcolor":"#ff00ff"
+        }, 
+        {
+         "firstgid":221,
+         "source":"..\/..\/..\/untitled.tsx"
         }],
  "tilewidth":16,
  "type":"map",

@@ -111,7 +111,8 @@ function create() {
 	map.setCollisionByExclusion([], true, 'Solid Layer');
 	setCollisionPlatformLayer(map, 'Platform Layer');
 	
-	player = game.add.sprite(32, game.world.height - 150, 'mouse');
+	var playerArr = findObjectsByType('player', map, 'Object Layer');
+	player = game.add.sprite(playerArr[0].x, playerArr[0].y - 32, 'mouse');
 
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
