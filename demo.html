@@ -121,6 +121,8 @@ function create() {
 //	exit.body.checkCollision.left = false;
 	exit.body.immovable = true;
 	exit.body.setSize(8,32,12,14);
+	exit.open = false;
+	exit.animations.add('exit',[2,3,4,5,0], 5, false);
 	
 	var playerArr = findObjectsByType('player', map, 'Object Layer');
 	player = game.add.sprite(playerArr[0].x, playerArr[0].y - 32, 'mouse');
@@ -138,6 +140,7 @@ function create() {
     //  Our two animations, walking left and right.
     player.animations.add('left', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
     player.animations.add('right', [8, 9, 10, 11, 12, 13, 14, 15], 10, true);
+
 		
 	cursors = game.input.keyboard.createCursorKeys();
     //  Our painting marker
@@ -180,7 +183,14 @@ function collectGoal(player, goal){
 	//console.log("Goal touched! ", goal);
 	goal.kill();
 	goal_count--;
+	if (goal_count == 0){
+		open_exit();
+	}
+}
 
+function open_exit(){
+	exit.frame = 1;
+	exit.open = true;
 }
 
 function sinkPlatform(player, platform){
@@ -196,12 +206,17 @@ function isPlayerDown(player){
 	return (player.body.blocked.down || player.body.touching.down);
 }
 
+function attemptExit(player, exit){
+	if (exit.open){
+		player.kill();
+		exit.animations.play('exit');
+	}
+}
 function update() {
-
 	game.physics.arcade.collide(player, platformLayer);
 	game.physics.arcade.collide(player, solidLayer);
 	game.physics.arcade.collide(player, sinkingPlatforms, sinkPlatform);
-	game.physics.arcade.collide(player, exit);
+	game.physics.arcade.collide(player, exit, attemptExit);
 	game.physics.arcade.overlap(player, goals, collectGoal);
 	
 	if (isPlayerDown(player)){
