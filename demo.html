@@ -22,6 +22,7 @@ function preload() {
     game.load.tilemap('map', 'assets/tilemaps/maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('Tiles', 'assets/tilemaps/tiles/tiles.png');
 	game.load.spritesheet('mouse', 'assets/sprites/mouse.png', 56, 48);
+	game.load.spritesheet('exit', 'assets/sprites/exit.png', 32, 51);
 	game.load.spritesheet("tilesSprites", "assets/tilemaps/tiles/tiles.png", 32, 32);
 
 }
@@ -33,6 +34,7 @@ var solidLayer;
 var goalLayer;
 var marker;
 var goals;
+var exit;
 var goal_count = 0;
 // var sprite;
 var cursors;
@@ -111,6 +113,15 @@ function create() {
 	map.setCollisionByExclusion([], true, 'Solid Layer');
 	setCollisionPlatformLayer(map, 'Platform Layer');
 	
+	var exitArr = findObjectsByType('exit', map, 'Object Layer');
+	exit = game.add.sprite(exitArr[0].x, exitArr[0].y - 28, 'exit');
+	game.physics.arcade.enable(exit);
+//	exit.body.checkCollision.down = false;
+//	exit.body.checkCollision.right = false;
+//	exit.body.checkCollision.left = false;
+	exit.body.immovable = true;
+	exit.body.setSize(8,32,12,14);
+	
 	var playerArr = findObjectsByType('player', map, 'Object Layer');
 	player = game.add.sprite(playerArr[0].x, playerArr[0].y - 32, 'mouse');
 
@@ -169,7 +180,7 @@ function collectGoal(player, goal){
 	//console.log("Goal touched! ", goal);
 	goal.kill();
 	goal_count--;
-	console.log(goal_count, " goals remain");
+
 }
 
 function sinkPlatform(player, platform){
@@ -181,24 +192,29 @@ function sinkPlatform(player, platform){
 	}
 }
 
+function isPlayerDown(player){
+	return (player.body.blocked.down || player.body.touching.down);
+}
+
 function update() {
 
 	game.physics.arcade.collide(player, platformLayer);
 	game.physics.arcade.collide(player, solidLayer);
 	game.physics.arcade.collide(player, sinkingPlatforms, sinkPlatform);
+	game.physics.arcade.collide(player, exit);
 	game.physics.arcade.overlap(player, goals, collectGoal);
 	
-	if (player.body.blocked.down){
+	if (isPlayerDown(player)){
 		player.body.velocity.x = 0;
 	}
     if (cursors.left.isDown)
     {
 		
         //  Move to the left
-		if (player.body.blocked.down || player.body.touching.down){
+		if (isPlayerDown(player)){
 			if (player.body.horizontalFacing == Phaser.RIGHT){
 				player.body.horizontalFacing = Phaser.LEFT;
-				player.body.setSize(26, 48, -10, 0);
+				player.body.setSize(26, 48, 0, 0);
 				player.body.x = player.body.x + 30;
 			}
 			player.animations.play('left');
@@ -209,7 +225,7 @@ function update() {
     {
 		
         //  Move to the right
-		if (player.body.blocked.down || player.body.touching.down){
+		if (isPlayerDown(player)){
 			if (player.body.horizontalFacing == Phaser.LEFT){
 				player.body.horizontalFacing = Phaser.RIGHT;
 				player.body.setSize(26, 48, 30, 0);
@@ -230,12 +246,12 @@ function update() {
 			player.frame = 14;
 		}
     }
-	if (!player.body.blocked.down){
+	if (!isPlayerDown(player)){
 		player.animations.stop();  
 	}		
 	
     //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown && (player.body.blocked.down || player.body.touching.down))
+    if (cursors.up.isDown && isPlayerDown(player))
     {
         player.body.velocity.y = -200;
     }
@@ -262,6 +278,8 @@ function update() {
 function render() {
 
    game.debug.bodyInfo(player, 32, 460);
+   game.debug.body(player);
+   game.debug.body(exit);
     <!-- if(currentDataString){ -->
         <!-- game.debug.text('Tile properties: ' + currentDataString, 16, 550); -->
     <!-- } else { -->
