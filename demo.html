@@ -40,24 +40,6 @@ var goal_count = 0;
 var cursors;
 var currentDataString;
 
-function setCollisionPlatformLayer(map, layerName){
-	layer = map.getLayer(layerName);
-	for (var y = 0; y < map.layers[layer].height; y++){
-            for (var x = 0; x < map.layers[layer].width; x++){
-                var tile = map.layers[layer].data[y][x];
-                if (tile && tile.index != -1){
-					tile.setCollision(false, false, true, false); //left, right, up, down
-                    tile.faceTop = true;
-					//console.log("Setting tile ", tile);
-                    //tile.faceBottom = collides;
-                    //tile.faceLeft = collides;
-                    //tile.faceRight = collides;
-                }
-            }
-    }
-}
-
-
 function findObjectsByType(targetType, tilemap, layer){
 	var result = [];
 
@@ -69,7 +51,29 @@ function findObjectsByType(targetType, tilemap, layer){
 
 	return result;
 }
-  
+
+function eachTile(map, layer, func){
+	layer = map.getLayer(layer);
+	for (var y = 0; y < map.layers[layer].height; y++){
+            for (var x = 0; x < map.layers[layer].width; x++){
+                var tile = map.layers[layer].data[y][x];
+				if (tile.index != -1){
+					func(tile);
+				}
+			}
+	}
+}
+
+function addTilesToGroup(map, layer, group, callback){
+		eachTile(map, layer, function(tile){
+			p = group.create(tile.worldX, tile.worldY, 'tilesSprites', tile.index - 1);
+			p.body.immovable = true;
+			if (callback !== undefined){
+				callback(p);
+			}
+		});
+}
+
 function create() {
 
 	game.stage.backgroundColor = '#2F8F8F';
@@ -77,12 +81,17 @@ function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     map = game.add.tilemap('map');
-
     map.addTilesetImage('Tiles');
 
+	solids = this.add.group();
+	solids.enableBody = true;
+	addTilesToGroup(map, 'Solid Layer', solids);
+	addTilesToGroup(map, 'Platform Layer', solids, function(p){
+		p.body.checkCollision.down = false;
+		p.body.checkCollision.left = false;
+		p.body.checkCollision.right = false;
+	});
 
-	solidLayer = map.createLayer('Solid Layer');
-	platformLayer = map.createLayer('Platform Layer');
 	layer = map.createLayer('Tile Layer 1');
     
 
@@ -90,11 +99,8 @@ function create() {
 	
 	goals = this.add.group();
 	goals.enableBody = true;
-	var goalsArr = findObjectsByType('goal', map, 'Object Layer');
-	goalsArr.forEach(function(goal){
-		goal_count++;
-		goals.create(goal.x, goal.y - 16, 'tilesSprites', goal.gid - 1)
-	});
+	addTilesToGroup(map, 'Goal Layer', goals, function(){goal_count++});
+	
 	
 	sinkingPlatforms = this.add.group();
 	sinkingPlatforms.enableBody = true;
@@ -111,7 +117,6 @@ function create() {
 
 	//map.setCollisionBetween(1, 1000, true, 'Solid Layer');
 	map.setCollisionByExclusion([], true, 'Solid Layer');
-	setCollisionPlatformLayer(map, 'Platform Layer');
 	
 	var exitArr = findObjectsByType('exit', map, 'Object Layer');
 	exit = game.add.sprite(exitArr[0].x, exitArr[0].y - 28, 'exit');
@@ -213,8 +218,7 @@ function attemptExit(player, exit){
 	}
 }
 function update() {
-	game.physics.arcade.collide(player, platformLayer);
-	game.physics.arcade.collide(player, solidLayer);
+	game.physics.arcade.collide(player, solids);
 	game.physics.arcade.collide(player, sinkingPlatforms, sinkPlatform);
 	game.physics.arcade.collide(player, exit, attemptExit);
 	game.physics.arcade.overlap(player, goals, collectGoal);
@@ -295,7 +299,8 @@ function render() {
    game.debug.bodyInfo(player, 32, 460);
    game.debug.body(player);
    game.debug.body(exit);
-    <!-- if(currentDataString){ -->
+
+   <!-- if(currentDataString){ -->
         <!-- game.debug.text('Tile properties: ' + currentDataString, 16, 550); -->
     <!-- } else { -->
         <!-- game.debug.text("Click on a tile to reveal the properties of the tile", 16, 550); -->
