@@ -91,29 +91,21 @@ function create() {
 		p.body.checkCollision.left = false;
 		p.body.checkCollision.right = false;
 	});
+	addTilesToGroup(map, 'Sinking Platform Layer', solids, function(p){
+		p.body.checkCollision.down = false;
+		p.body.checkCollision.left = false;
+		p.body.checkCollision.right = false;
+		p.body.drag.y = 25;
+		p.origin_y = p.y;
+		p.is_sinking = true;
+	});
 
 	layer = map.createLayer('Tile Layer 1');
-    
-
     layer.resizeWorld();
 	
 	goals = this.add.group();
 	goals.enableBody = true;
 	addTilesToGroup(map, 'Goal Layer', goals, function(){goal_count++});
-	
-	
-	sinkingPlatforms = this.add.group();
-	sinkingPlatforms.enableBody = true;
-	var sinkingPlatformsArr = findObjectsByType('sinkingPlatform', map, 'Object Layer');
-	sinkingPlatformsArr.forEach(function(platform){
-		p = sinkingPlatforms.create(platform.x, platform.y - 16, 'tilesSprites', platform.gid - 1)
-		p.body.checkCollision.down = false;
-		p.body.checkCollision.left = false;
-		p.body.checkCollision.right = false;
-		p.body.drag.y = 25;
-		p.body.immovable = true;
-		p.origin_y = p.y;
-	});
 
 	//map.setCollisionBetween(1, 1000, true, 'Solid Layer');
 	map.setCollisionByExclusion([], true, 'Solid Layer');
@@ -198,14 +190,17 @@ function open_exit(){
 	exit.open = true;
 }
 
-function sinkPlatform(player, platform){
-	if (player.y + 48 <= platform.y){ //check if the legs of the mouse are standing on top of the platform
-		platform.body.velocity.y = 25;
-		if (platform.origin_y + 20 <= platform.y){
-			platform.kill();
+function collideWithSolid(player, solid){
+	if (solid.is_sinking){
+		if (player.y + 48 <= solid.y){ //check if the legs of the mouse are standing on top of the platform
+			solid.body.velocity.y = 25;
+			if (solid.origin_y + 20 <= solid.y){
+				solid.kill();
+			}
 		}
 	}
 }
+
 
 function isPlayerDown(player){
 	return (player.body.blocked.down || player.body.touching.down);
@@ -218,8 +213,8 @@ function attemptExit(player, exit){
 	}
 }
 function update() {
-	game.physics.arcade.collide(player, solids);
-	game.physics.arcade.collide(player, sinkingPlatforms, sinkPlatform);
+	game.physics.arcade.collide(player, solids, collideWithSolid);
+//	game.physics.arcade.collide(player, sinkingPlatforms, sinkPlatform);
 	game.physics.arcade.collide(player, exit, attemptExit);
 	game.physics.arcade.overlap(player, goals, collectGoal);
 	
