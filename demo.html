@@ -23,6 +23,7 @@ function preload() {
     game.load.image('Tiles', 'assets/tilemaps/tiles/tiles.png');
 	game.load.spritesheet('mouse', 'assets/sprites/mouse.png', 56, 50);
 	game.load.spritesheet('exit', 'assets/sprites/exit.png', 32, 51);
+	game.load.image('juicero', 'assets/sprites/juicero.png');
 	game.load.spritesheet("tilesSprites", "assets/tilemaps/tiles/tiles.png", 32, 32);
 
 }
@@ -36,6 +37,7 @@ var marker;
 var goals;
 var exit;
 var thorn;
+var entities;
 var goal_count = 0;
 // var sprite;
 var cursors;
@@ -47,7 +49,7 @@ function findObjectsByType(targetType, tilemap, layer){
 	var result = [];
 
 	tilemap.objects[layer].forEach(function(element){
-	  if(element.properties.type == targetType) {
+	  if(element.properties !== undefined && element.properties.type == targetType) {
 		result.push(element);
 	  }
 	}, this);
@@ -77,6 +79,9 @@ function addTilesToGroup(map, layer, group, callback){
 		});
 }
 
+function closeEnough(x1,y1,x2,y2){
+	return (Math.abs(x1-x2) + Math.abs(y1-y2) <= 1);
+}
 function create() {
 
 	game.stage.backgroundColor = '#2F8F8F';
@@ -117,6 +122,32 @@ function create() {
 	thorn.hazards = {left: true, right: true};
 	game.physics.arcade.enable(thorn);
 	thorn.body.immovable = true;
+	
+	entities = this.add.group();
+	entities.enableBody = true;
+	var entityArr = findObjectsByType('entity', map, 'Object Layer');
+	entityArr.forEach(function(entity){
+		console.log(entity);
+		e = entities.create(entity.x, entity.y, entity.properties.image);
+		e.body.immovable = true;
+		if (entity.properties.movementType == 'patrol'){
+			e.waypoints = [{x: entity.properties.wayPoint1X, y: entity.properties.wayPoint1Y},{x: entity.properties.wayPoint2X, y: entity.properties.wayPoint2Y}]
+			game.physics.arcade.moveToXY(e, e.waypoints[0].x, e.waypoints[0].y);
+			e.currentWaypoint = 0;
+			e.update = function(){
+				if (closeEnough(this.x, this.y, this.waypoints[this.currentWaypoint].x, this.waypoints[this.currentWaypoint].y)){
+//				if(this.getBounds().contains(this.waypoints[this.currentWaypoint].x, this.waypoints[this.currentWaypoint].y)){ //reached
+					this.currentWaypoint = (this.currentWaypoint + 1) % this.waypoints.length;
+					game.physics.arcade.moveToXY(this, this.waypoints[this.currentWaypoint].x, this.waypoints[this.currentWaypoint].y);
+				}
+			};
+		}
+		
+		if (entity.properties.hazard == 'all'){
+			e.hazards = {left: true, right: true, up: true, down: true};
+		}
+	});
+	
 	
 	var exitArr = findObjectsByType('exit', map, 'Object Layer');
 	exit = game.add.sprite(exitArr[0].x, exitArr[0].y - 28, 'exit');
@@ -265,6 +296,7 @@ function update() {
 	game.physics.arcade.collide(player, solids, collideWithSolid);
 	game.physics.arcade.collide(player, exit, attemptExit);
 	game.physics.arcade.collide(player, thorn, collideWithHazard);
+	game.physics.arcade.collide(player, entities, collideWithHazard);
 	game.physics.arcade.overlap(player, goals, collectGoal);
 	if (player.status == 'alive'){
 		if (isPlayerDown(player)){
