@@ -24,6 +24,7 @@ function preload() {
 	game.load.spritesheet('mouse', 'assets/sprites/mouse.png', 56, 50);
 	game.load.spritesheet('exit', 'assets/sprites/exit.png', 32, 51);
 	game.load.image('juicero', 'assets/sprites/juicero.png');
+	game.load.image('piston', 'assets/sprites/piston.png');
 	game.load.spritesheet("tilesSprites", "assets/tilemaps/tiles/tiles.png", 32, 32);
 
 }
@@ -91,6 +92,7 @@ function create() {
     map = game.add.tilemap('map');
     map.addTilesetImage('Tiles');
 
+	
 	solids = this.add.group();
 	solids.enableBody = true;
 	addTilesToGroup(map, 'Solid Layer', solids);
@@ -145,6 +147,18 @@ function create() {
 		
 		if (entity.properties.hazard == 'all'){
 			e.hazards = {left: true, right: true, up: true, down: true};
+		}
+		
+		if (entity.properties.image == 'juicero'){ //TODO: not a good way to check this!
+			//tileSprite = game.add.tileSprite(e.x + 16, entity.properties.pistonY, 16, 10, 'piston');
+			piston = game.add.tileSprite(e.x + 22, entity.properties.pistonY, 16, 10, 'piston');
+			entities.add(piston);
+			piston.hazards = {left: true, right: true, up: true, down: true};
+			piston.entity = e;
+			piston.body.immovable = true;
+			piston.update = function() {
+				this.height = this.entity.y - this.y;
+			}
 		}
 	});
 	
@@ -353,7 +367,7 @@ function update() {
 
 function render() {
 
-   game.debug.bodyInfo(player, 32, 460);
+//   game.debug.bodyInfo(player, 32, 460);
 //   game.debug.body(player);
 //   game.debug.body(exit);
 }
