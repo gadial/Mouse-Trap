@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="32" height="25" tilewidth="16" tileheight="16" nextobjectid="44">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="32" height="25" tilewidth="16" tileheight="16" nextobjectid="49">
  <tileset firstgid="1" name="Tiles" tilewidth="32" tileheight="32" tilecount="220" columns="20">
   <image source="../tiles/tiles.png" trans="ff00ff" width="640" height="352"/>
   <tile id="103">
@@ -170,7 +170,7 @@
 </data>
  </layer>
  <objectgroup name="Object Layer">
-  <object id="29" gid="221" x="448" y="208" width="56" height="48">
+  <object id="29" gid="221" x="448" y="128" width="56" height="48">
    <properties>
     <property name="type" value="player"/>
    </properties>
@@ -178,6 +178,11 @@
   <object id="32" gid="92" x="416" y="208" width="32" height="32">
    <properties>
     <property name="type" value="exit"/>
+   </properties>
+  </object>
+  <object id="45" gid="118" x="224" y="128" width="32" height="32">
+   <properties>
+    <property name="type" value="thorn"/>
    </properties>
   </object>
  </objectgroup>
@@ -219,7 +224,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,118,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
