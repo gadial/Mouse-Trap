@@ -41,6 +41,8 @@ var goal_count = 0;
 var cursors;
 var currentDataString;
 
+var TERMINAL_VELOCITY = 300;
+
 function findObjectsByType(targetType, tilemap, layer){
 	var result = [];
 
@@ -199,6 +201,10 @@ function open_exit(){
 }
 
 function collideWithSolid(player, solid){
+	if (player.at_terminal_velocity){
+		terminatePlayer(player);
+		return;
+	}
 	if (solid.is_sinking){
 		if (player.y + 48 <= solid.y){ //check if the legs of the mouse are standing on top of the platform
 			solid.body.velocity.y = 25;
@@ -230,6 +236,10 @@ function terminatePlayer(player){
 }
 
 function collideWithHazard(player, hazard){
+	if (player.at_terminal_velocity){
+		terminatePlayer(player);
+		return;
+	}
 	if (hazard.hazards.left && hazard.body.touching.left){
 		console.log("Kill from left!");
 		terminatePlayer(player)
@@ -249,6 +259,9 @@ function collideWithHazard(player, hazard){
 }
 
 function update() {
+	if (player.body.velocity.y > TERMINAL_VELOCITY){
+		player.at_terminal_velocity = true;
+	}
 	game.physics.arcade.collide(player, solids, collideWithSolid);
 	game.physics.arcade.collide(player, exit, attemptExit);
 	game.physics.arcade.collide(player, thorn, collideWithHazard);
