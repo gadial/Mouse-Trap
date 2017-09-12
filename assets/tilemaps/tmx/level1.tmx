@@ -111,7 +111,10 @@
   </tile>
  </tileset>
  <tileset firstgid="221" source="../../../untitled.tsx"/>
- <tileset firstgid="248" source="../../../../falling/assets/levels/monsters.tsx"/>
+ <tileset firstgid="244" source="../../../../falling/assets/levels/monsters.tsx"/>
+ <imagelayer name="Image Layer 1" visible="0">
+  <image source="../../../Screenshots/level1.gif" width="513" height="401"/>
+ </imagelayer>
  <layer name="Platform Layer" width="32" height="25">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -190,8 +193,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,147,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,0,
+0,0,147,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,147,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -215,10 +218,11 @@
     <property name="type" value="thorn"/>
    </properties>
   </object>
-  <object id="53" gid="248" x="96" y="288" width="58" height="22">
+  <object id="53" gid="244" x="96" y="288" width="58" height="22">
    <properties>
     <property name="hazard" value="all"/>
     <property name="image" value="juicero"/>
+    <property name="initialWaypoint" type="int" value="0"/>
     <property name="movementType" value="patrol"/>
     <property name="pistonY" type="int" value="176"/>
     <property name="type" value="entity"/>
@@ -226,12 +230,14 @@
     <property name="wayPoint1Y" type="int" value="192"/>
     <property name="wayPoint2X" type="int" value="96"/>
     <property name="wayPoint2Y" type="int" value="282"/>
+    <property name="waypoints" value="96,192,96,282"/>
    </properties>
   </object>
-  <object id="58" gid="248" x="160" y="256" width="58" height="22">
+  <object id="58" gid="244" x="160" y="256" width="58" height="22">
    <properties>
     <property name="hazard" value="all"/>
     <property name="image" value="juicero"/>
+    <property name="initialWaypoint" type="int" value="1"/>
     <property name="movementType" value="patrol"/>
     <property name="pistonY" type="int" value="176"/>
     <property name="type" value="entity"/>
@@ -239,12 +245,14 @@
     <property name="wayPoint1Y" type="int" value="282"/>
     <property name="wayPoint2X" type="int" value="160"/>
     <property name="wayPoint2Y" type="int" value="192"/>
+    <property name="waypoints" value="160,192,160,282"/>
    </properties>
   </object>
-  <object id="59" gid="248" x="224" y="224" width="58" height="22">
+  <object id="59" gid="244" x="224" y="224" width="58" height="22">
    <properties>
     <property name="hazard" value="all"/>
     <property name="image" value="juicero"/>
+    <property name="initialWaypoint" type="int" value="1"/>
     <property name="movementType" value="patrol"/>
     <property name="pistonY" type="int" value="176"/>
     <property name="type" value="entity"/>
@@ -252,12 +260,14 @@
     <property name="wayPoint1Y" type="int" value="282"/>
     <property name="wayPoint2X" type="int" value="224"/>
     <property name="wayPoint2Y" type="int" value="192"/>
+    <property name="waypoints" value="224,192,224,282"/>
    </properties>
   </object>
-  <object id="60" gid="248" x="288" y="192" width="58" height="22">
+  <object id="60" gid="244" x="288" y="192" width="58" height="22">
    <properties>
     <property name="hazard" value="all"/>
     <property name="image" value="juicero"/>
+    <property name="initialWaypoint" type="int" value="1"/>
     <property name="movementType" value="patrol"/>
     <property name="pistonY" type="int" value="176"/>
     <property name="type" value="entity"/>
@@ -265,6 +275,7 @@
     <property name="wayPoint1Y" type="int" value="282"/>
     <property name="wayPoint2X" type="int" value="288"/>
     <property name="wayPoint2Y" type="int" value="192"/>
+    <property name="waypoints" value="288,192,288,282"/>
    </properties>
   </object>
  </objectgroup>

@@ -83,6 +83,71 @@ function addTilesToGroup(map, layer, group, callback){
 function closeEnough(x1,y1,x2,y2){
 	return (Math.abs(x1-x2) + Math.abs(y1-y2) <= 1);
 }
+
+function coordsCloseEnough(a,b){
+	return closeEnough(a.x, a.y, b.x, b.y);
+}
+
+function updatePatrol(){
+	if (coordsCloseEnough(this,this.waypoints[this.currentWaypoint])){
+		this.currentWaypoint = (this.currentWaypoint + 1) % this.waypoints.length;
+		game.physics.arcade.moveToXY(this, this.waypoints[this.currentWaypoint].x, this.waypoints[this.currentWaypoint].y);
+	}
+}
+
+function parseWaypoints(s){
+	if (s === undefined){
+		return [];
+	}
+	var sArr = s.split(",");
+	if (sArr.length % 2 != 0){
+		return [];
+	}
+	var i = 0;
+	var waypoints = [];
+	while (i < sArr.length){
+		waypoints.push({x: parseInt(sArr[i]), y: parseInt(sArr[i+1])});
+		i += 2;
+	}
+	return waypoints;
+}
+
+function createEntity(entity){
+	console.log(entity);
+	e = entities.create(entity.x, entity.y, entity.properties.image);
+	e.body.immovable = true;
+	if (entity.properties.movementType == 'patrol'){
+		e.waypoints = parseWaypoints(entity.properties.waypoints);
+		var i = entity.properties.initialWaypoint;
+		if (e.waypoints[i] !== undefined){
+			game.physics.arcade.moveToXY(e, e.waypoints[i].x, e.waypoints[i].y);
+			e.currentWaypoint = i;
+			e.update = updatePatrol;
+		}
+	}
+	
+	if (entity.properties.hazard == 'all'){
+		e.hazards = {left: true, right: true, up: true, down: true};
+	}
+	
+	if (entity.properties.hazard == 'sides'){
+		e.hazards = {left: true, right: true};
+	}
+	
+	
+	if (entity.properties.image == 'juicero'){ //TODO: not a good way to check this!
+		//tileSprite = game.add.tileSprite(e.x + 16, entity.properties.pistonY, 16, 10, 'piston');
+		piston = game.add.tileSprite(e.x + 22, entity.properties.pistonY, 16, 10, 'piston');
+		entities.add(piston);
+		piston.hazards = {left: true, right: true, up: true, down: true};
+		piston.entity = e;
+		piston.body.immovable = true;
+		piston.update = function() {
+			this.height = this.entity.y - this.y;
+		}
+	}
+}
+	
 function create() {
 
 	game.stage.backgroundColor = '#2F8F8F';
@@ -128,47 +193,12 @@ function create() {
 	entities = this.add.group();
 	entities.enableBody = true;
 	var entityArr = findObjectsByType('entity', map, 'Object Layer');
-	entityArr.forEach(function(entity){
-		console.log(entity);
-		e = entities.create(entity.x, entity.y, entity.properties.image);
-		e.body.immovable = true;
-		if (entity.properties.movementType == 'patrol'){
-			e.waypoints = [{x: entity.properties.wayPoint1X, y: entity.properties.wayPoint1Y},{x: entity.properties.wayPoint2X, y: entity.properties.wayPoint2Y}]
-			game.physics.arcade.moveToXY(e, e.waypoints[0].x, e.waypoints[0].y);
-			e.currentWaypoint = 0;
-			e.update = function(){
-				if (closeEnough(this.x, this.y, this.waypoints[this.currentWaypoint].x, this.waypoints[this.currentWaypoint].y)){
-//				if(this.getBounds().contains(this.waypoints[this.currentWaypoint].x, this.waypoints[this.currentWaypoint].y)){ //reached
-					this.currentWaypoint = (this.currentWaypoint + 1) % this.waypoints.length;
-					game.physics.arcade.moveToXY(this, this.waypoints[this.currentWaypoint].x, this.waypoints[this.currentWaypoint].y);
-				}
-			};
-		}
-		
-		if (entity.properties.hazard == 'all'){
-			e.hazards = {left: true, right: true, up: true, down: true};
-		}
-		
-		if (entity.properties.image == 'juicero'){ //TODO: not a good way to check this!
-			//tileSprite = game.add.tileSprite(e.x + 16, entity.properties.pistonY, 16, 10, 'piston');
-			piston = game.add.tileSprite(e.x + 22, entity.properties.pistonY, 16, 10, 'piston');
-			entities.add(piston);
-			piston.hazards = {left: true, right: true, up: true, down: true};
-			piston.entity = e;
-			piston.body.immovable = true;
-			piston.update = function() {
-				this.height = this.entity.y - this.y;
-			}
-		}
-	});
+	entityArr.forEach(createEntity);
 	
 	
 	var exitArr = findObjectsByType('exit', map, 'Object Layer');
 	exit = game.add.sprite(exitArr[0].x, exitArr[0].y - 28, 'exit');
 	game.physics.arcade.enable(exit);
-//	exit.body.checkCollision.down = false;
-//	exit.body.checkCollision.right = false;
-//	exit.body.checkCollision.left = false;
 	exit.body.immovable = true;
 	exit.body.setSize(8,32,12,14);
 	exit.open = false;
@@ -195,19 +225,6 @@ function create() {
 
 		
 	cursors = game.input.keyboard.createCursorKeys();
-    //  Our painting marker
-    <!-- marker = game.add.graphics(); -->
-    <!-- marker.lineStyle(2, 0xffffff, 1); -->
-    <!-- marker.drawRect(0, 0, 32, 32); -->
-
-    <!-- game.input.addMoveCallback(updateMarker, this); -->
-
-    <!-- game.input.onDown.add(getTileProperties, this); -->
-
-    <!-- cursors = game.input.keyboard.createCursorKeys(); -->
-	
-	
-
 }
 
 function getTileProperties() {
