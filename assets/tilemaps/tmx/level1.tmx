@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="32" height="25" tilewidth="16" tileheight="16" nextobjectid="63">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="16" tileheight="16" backgroundcolor="#2f8f8f" nextobjectid="68">
  <tileset firstgid="1" name="Tiles" tilewidth="32" tileheight="32" tilecount="220" columns="20">
   <image source="../tiles/tiles.png" trans="ff00ff" width="640" height="352"/>
   <tile id="103">
@@ -112,12 +112,11 @@
  </tileset>
  <tileset firstgid="221" source="../../../untitled.tsx"/>
  <tileset firstgid="244" source="../../../../falling/assets/levels/monsters.tsx"/>
- <imagelayer name="Image Layer 1" visible="0">
+ <imagelayer name="Image Layer 1" visible="0" offsetx="0" offsety="-16">
   <image source="../../../Screenshots/level1.gif" width="513" height="401"/>
  </imagelayer>
- <layer name="Platform Layer" width="32" height="25">
+ <layer name="Platform Layer" width="32" height="24">
   <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -144,9 +143,8 @@
 107,0,107,0,0,0,107,0,107,0,66,0,66,0,66,0,66,0,66,0,66,0,0,0,107,0,107,0,107,0,107,0
 </data>
  </layer>
- <layer name="Tile Layer 1" width="32" height="25">
+ <layer name="Tile Layer 1" width="32" height="24">
   <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 178,0,178,0,178,0,178,0,178,0,178,0,178,0,178,0,178,0,178,0,178,0,178,0,178,0,178,0,178,0,178,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -173,9 +171,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer name="Goal Layer" width="32" height="25">
+ <layer name="Goal Layer" width="32" height="24">
   <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -203,85 +200,86 @@
 </data>
  </layer>
  <objectgroup name="Object Layer">
-  <object id="29" gid="221" x="448" y="128" width="56" height="48">
+  <object id="29" gid="221" x="448" y="112" width="56" height="48">
    <properties>
     <property name="type" value="player"/>
    </properties>
   </object>
-  <object id="32" gid="92" x="416" y="208" width="32" height="32">
+  <object id="32" gid="92" x="416" y="192" width="32" height="32">
    <properties>
     <property name="type" value="exit"/>
    </properties>
   </object>
-  <object id="45" gid="118" x="224" y="128" width="32" height="32">
+  <object id="45" gid="118" x="224" y="112" width="32" height="32">
    <properties>
-    <property name="type" value="thorn"/>
+    <property name="hazard" value="sides"/>
+    <property name="image" value="thorn"/>
+    <property name="type" value="entity"/>
    </properties>
   </object>
-  <object id="53" gid="244" x="96" y="288" width="58" height="22">
+  <object id="53" gid="244" x="96" y="272" width="58" height="22">
    <properties>
     <property name="hazard" value="all"/>
     <property name="image" value="juicero"/>
     <property name="initialWaypoint" type="int" value="0"/>
     <property name="movementType" value="patrol"/>
-    <property name="pistonY" type="int" value="176"/>
+    <property name="pistonY" type="int" value="160"/>
     <property name="type" value="entity"/>
     <property name="wayPoint1X" type="int" value="96"/>
     <property name="wayPoint1Y" type="int" value="192"/>
     <property name="wayPoint2X" type="int" value="96"/>
     <property name="wayPoint2Y" type="int" value="282"/>
-    <property name="waypoints" value="96,192,96,282"/>
+    <property name="waypoints" value="96,176,96,266"/>
    </properties>
   </object>
-  <object id="58" gid="244" x="160" y="256" width="58" height="22">
+  <object id="58" gid="244" x="160" y="240" width="58" height="22">
    <properties>
     <property name="hazard" value="all"/>
     <property name="image" value="juicero"/>
     <property name="initialWaypoint" type="int" value="1"/>
     <property name="movementType" value="patrol"/>
-    <property name="pistonY" type="int" value="176"/>
+    <property name="pistonY" type="int" value="160"/>
     <property name="type" value="entity"/>
     <property name="wayPoint1X" type="int" value="160"/>
     <property name="wayPoint1Y" type="int" value="282"/>
     <property name="wayPoint2X" type="int" value="160"/>
     <property name="wayPoint2Y" type="int" value="192"/>
-    <property name="waypoints" value="160,192,160,282"/>
+    <property name="waypoints" value="160,176,160,266"/>
    </properties>
   </object>
-  <object id="59" gid="244" x="224" y="224" width="58" height="22">
+  <object id="59" gid="244" x="224" y="208" width="58" height="22">
    <properties>
     <property name="hazard" value="all"/>
     <property name="image" value="juicero"/>
     <property name="initialWaypoint" type="int" value="1"/>
     <property name="movementType" value="patrol"/>
-    <property name="pistonY" type="int" value="176"/>
+    <property name="pistonY" type="int" value="160"/>
     <property name="type" value="entity"/>
     <property name="wayPoint1X" type="int" value="224"/>
     <property name="wayPoint1Y" type="int" value="282"/>
     <property name="wayPoint2X" type="int" value="224"/>
     <property name="wayPoint2Y" type="int" value="192"/>
-    <property name="waypoints" value="224,192,224,282"/>
+    <property name="waypoints" value="224,176,224,266"/>
    </properties>
   </object>
-  <object id="60" gid="244" x="288" y="192" width="58" height="22">
+  <object id="60" gid="244" x="288" y="176" width="58" height="22">
    <properties>
     <property name="hazard" value="all"/>
     <property name="image" value="juicero"/>
     <property name="initialWaypoint" type="int" value="1"/>
     <property name="movementType" value="patrol"/>
-    <property name="pistonY" type="int" value="176"/>
+    <property name="pistonY" type="int" value="160"/>
     <property name="type" value="entity"/>
     <property name="wayPoint1X" type="int" value="288"/>
     <property name="wayPoint1Y" type="int" value="282"/>
     <property name="wayPoint2X" type="int" value="288"/>
     <property name="wayPoint2Y" type="int" value="192"/>
-    <property name="waypoints" value="288,192,288,282"/>
+    <property name="waypoints" value="288,176,288,266"/>
    </properties>
   </object>
  </objectgroup>
- <layer name="Solid Layer" width="32" height="25">
+ <layer name="Solid Layer" width="32" height="24">
   <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -308,9 +306,8 @@
 0,0,0,0,208,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,208,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer name="Sinking Platform Layer" width="32" height="25">
+ <layer name="Sinking Platform Layer" width="32" height="24">
   <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
