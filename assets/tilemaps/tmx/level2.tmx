@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="32" height="25" tilewidth="16" tileheight="16" backgroundcolor="#6fcf8f" nextobjectid="12">
- <tileset firstgid="1" name="Tiles" tilewidth="32" tileheight="32" tilecount="220" columns="20">
+ <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32" tilecount="220" columns="20">
   <image source="../tiles/tiles.png" trans="ff00ff" width="640" height="352"/>
  </tileset>
  <tileset firstgid="221" source="../../../untitled.tsx"/>

@@ -191,7 +191,7 @@
          "imageheight":352,
          "imagewidth":640,
          "margin":0,
-         "name":"Tiles",
+         "name":"tiles",
          "spacing":0,
          "tilecount":220,
          "tileheight":32,
