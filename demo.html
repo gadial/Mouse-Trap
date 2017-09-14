@@ -2,7 +2,7 @@
 <html lang="en"> 
 <head> 
 	<meta charset="UTF-8" />
-    <title>Mouse Traph</title>
+    <title>Mouse Trap</title>
 	<script type="text/javascript" src="js/phaser.js"></script>
     <style type="text/css">
         body {
@@ -19,17 +19,18 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: p
 
 function preload() {
 
-    game.load.tilemap('map', 'assets/tilemaps/maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('map', 'assets/tilemaps/maps/level2.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('Tiles', 'assets/tilemaps/tiles/tiles.png');
 	game.load.spritesheet('mouse', 'assets/sprites/mouse.png', 56, 50);
 	game.load.spritesheet('exit', 'assets/sprites/exit.png', 32, 51);
+	game.load.spritesheet('troll', "assets/sprites/troll.png", 64, 64);
 	game.load.image('juicero', 'assets/sprites/juicero.png');
 	game.load.image('piston', 'assets/sprites/piston.png');
-	game.load.image('thorn', 'assets/sprites/thorn.png');
 	game.load.spritesheet("tilesSprites", "assets/tilemaps/tiles/tiles.png", 32, 32);
+	
 
 }
-
+var TILE_SIZE = 16;
 var map;
 var layer;
 var platformLayer;
@@ -92,7 +93,7 @@ function coordsCloseEnough(a,b){
 function updatePatrol(){
 	if (coordsCloseEnough(this,this.waypoints[this.currentWaypoint])){
 		this.currentWaypoint = (this.currentWaypoint + 1) % this.waypoints.length;
-		game.physics.arcade.moveToXY(this, this.waypoints[this.currentWaypoint].x, this.waypoints[this.currentWaypoint].y);
+		game.physics.arcade.moveToXY(this, this.waypoints[this.currentWaypoint].x, this.waypoints[this.currentWaypoint].y, this.speed);
 	}
 }
 
@@ -114,20 +115,26 @@ function parseWaypoints(s){
 }
 
 function createEntity(entity){
-	console.log(entity);
+	console.log("Creating entity ", entity);
 	var offset = 0;
 	if (entity.properties.image == 'tilesSprites'){
 		offset = entity.gid - 1;
 	}
-	e = entities.create(entity.x, entity.y - (entity.height - 16), entity.properties.image, offset);
+	e = entities.create(entity.x, entity.y - (entity.height - TILE_SIZE), entity.properties.image, offset);
 	e.body.immovable = true;
+	e.speed = 60; //Phaser default
+	if (entity.properties.speed !== undefined){
+		e.speed = entity.properties.speed;
+	}
 	if (entity.properties.movementType == 'patrol'){
 		e.waypoints = parseWaypoints(entity.properties.waypoints);
 		var i = entity.properties.initialWaypoint;
-		if (e.waypoints[i] !== undefined){
-			game.physics.arcade.moveToXY(e, e.waypoints[i].x, e.waypoints[i].y);
+		if (i !== undefined && e.waypoints[i] !== undefined){
+			game.physics.arcade.moveToXY(e, e.waypoints[i].x, e.waypoints[i].y, e.speed);
 			e.currentWaypoint = i;
 			e.update = updatePatrol;
+		} else {
+			console.warn("Problem with entity ", entity, ": seems like initalWaypoint is undefined")
 		}
 	}
 	
@@ -163,7 +170,7 @@ function create() {
 	
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    map = game.add.tilemap('map',16,16);
+    map = game.add.tilemap('map',TILE_SIZE,TILE_SIZE);
 	
     map.addTilesetImage('Tiles');
 
@@ -185,7 +192,7 @@ function create() {
 		p.is_sinking = true;
 	});
 
-	layer = map.createLayer('Tile Layer 1');
+	layer = map.createLayer('Background Layer');
     layer.resizeWorld();
 	
 	goals = this.add.group();
@@ -193,16 +200,11 @@ function create() {
 	addTilesToGroup(map, 'Goal Layer', goals, function(){goal_count++});
 
 	map.setCollisionByExclusion([], true, 'Solid Layer');
-	
-	<!-- var thornArr = findObjectsByType('thorn', map, 'Object Layer'); -->
-	<!-- thorn = game.add.sprite(thornArr[0].x, thornArr[0].y - 16, 'tilesSprites', thornArr[0].gid - 1); -->
-	<!-- thorn.hazards = {left: true, right: true}; -->
-	<!-- game.physics.arcade.enable(thorn); -->
-	<!-- thorn.body.immovable = true; -->
-	
+
 	entities = this.add.group();
 	entities.enableBody = true;
 	var entityArr = findObjectsByType('entity', map, 'Object Layer');
+	console.log("Found entitites ", entityArr);
 	entityArr.forEach(createEntity);
 	
 	
@@ -248,13 +250,6 @@ function getTileProperties() {
     currentDataString = JSON.stringify( tile.properties );
 
     tile.properties.wibble = true;
-
-}
-
-function updateMarker() {
-
-    marker.x = layer.getTileX(game.input.activePointer.worldX) * 16;
-    marker.y = layer.getTileY(game.input.activePointer.worldY) * 16;
 
 }
 
@@ -336,7 +331,6 @@ function update() {
 	}
 	game.physics.arcade.collide(player, solids, collideWithSolid);
 	game.physics.arcade.collide(player, exit, attemptExit);
-	<!-- game.physics.arcade.collide(player, thorn, collideWithHazard); -->
 	game.physics.arcade.collide(player, entities, collideWithHazard);
 	game.physics.arcade.overlap(player, goals, collectGoal);
 	if (player.status == 'alive'){
