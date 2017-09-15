@@ -14,7 +14,7 @@
 
 <script type="text/javascript">
 
-var sprite_images = ['juicero', 'piston'];
+var sprite_images = ['juicero', 'piston', 'ball'];
 var sprite_sheets = {
 	'mouse': {width: 56, height: 50, animations: {
 		'left': [0, 1, 2, 3, 4, 5, 6, 7],
@@ -68,6 +68,7 @@ var goal_count = 0;
 // var sprite;
 var cursors;
 var currentDataString;
+var covers;
 
 var TERMINAL_VELOCITY = 300;
 
@@ -106,7 +107,7 @@ function addTilesToGroup(map, layer, group, callback){
 }
 
 function closeEnough(x1,y1,x2,y2){
-	return (Math.abs(x1-x2) + Math.abs(y1-y2) <= 1);
+	return (Math.abs(x1-x2) + Math.abs(y1-y2) <= 3);
 }
 
 function coordsCloseEnough(a,b){
@@ -114,9 +115,21 @@ function coordsCloseEnough(a,b){
 }
 
 function updatePatrol(){
+//	console.log(this.properties.image, " at ", [this.x, this.y]);
 	if (coordsCloseEnough(this,this.waypoints[this.currentWaypoint])){
-		this.currentWaypoint = (this.currentWaypoint + 1) % this.waypoints.length;
+		if ((this.delta == 1 && this.currentWaypoint == this.waypoints.length - 1) || this.delta == -1 && this.currentWaypoint == 0){
+			this.delta *= -1;
+		}
+		this.currentWaypoint = this.currentWaypoint + this.delta; 
+//		console.log(this.properties.image, " Going to waypoint ", this.currentWaypoint)
 		game.physics.arcade.moveToXY(this, this.waypoints[this.currentWaypoint].x, this.waypoints[this.currentWaypoint].y, this.speed);
+	}
+	if (this.properties.animationType == 'leftAndRight'){
+		if (this.body.deltaX() > 0){
+			this.animations.play('right');
+		} else {
+			this.animations.play('left');
+		}
 	}
 }
 
@@ -144,13 +157,20 @@ function createEntity(entity){
 		offset = entity.gid - 1;
 	}
 	e = entities.create(entity.x, entity.y - (entity.height - TILE_SIZE), entity.properties.image, offset);
+	e.properties = entity.properties;
 	e.body.immovable = true;
 	e.speed = 60; //Phaser default
+	if (entity.properties.animationType == 'leftAndRight'){
+		animations = sprite_sheets[entity.properties.image].animations
+		e.animations.add('left', animations.left, 10, true);
+		e.animations.add('right', animations.right, 10, true);
+	}
 	if (entity.properties.speed !== undefined){
 		e.speed = entity.properties.speed;
 	}
 	if (entity.properties.movementType == 'patrol'){
 		e.waypoints = parseWaypoints(entity.properties.waypoints);
+		e.delta = 1;
 		var i = entity.properties.initialWaypoint;
 		if (i !== undefined && e.waypoints[i] !== undefined){
 			game.physics.arcade.moveToXY(e, e.waypoints[i].x, e.waypoints[i].y, e.speed);
@@ -181,6 +201,8 @@ function createEntity(entity){
 			this.height = this.entity.y - this.y;
 		}
 	}
+	
+	console.log("Done creating ",e);
 }
 	
 function create() {
@@ -196,6 +218,12 @@ function create() {
     map = game.add.tilemap('map',TILE_SIZE,TILE_SIZE);
 	
     map.addTilesetImage('tiles');
+
+		entities = this.add.group();
+	entities.enableBody = true;
+	var entityArr = findObjectsByType('entity', map, 'Object Layer');
+	console.log("Found entitites ", entityArr);
+	entityArr.forEach(createEntity);
 
 	
 	solids = this.add.group();
@@ -223,14 +251,18 @@ function create() {
 	addTilesToGroup(map, 'Goal Layer', goals, function(){goal_count++});
 
 	map.setCollisionByExclusion([], true, 'Solid Layer');
+	
+	covers = this.add.group();
+	covers.enableBody = true;
+	var coverArr = findObjectsByType('cover', map, 'Object Layer');
+	coverArr.forEach(function(c){
+		cSprite = covers.create(c.x,c.y + TILE_SIZE);
+		cSprite.body.height = c.height;
+		cSprite.body.width = c.width;
+		console.log("cSprite created: ", cSprite);
+	});
+	
 
-	entities = this.add.group();
-	entities.enableBody = true;
-	var entityArr = findObjectsByType('entity', map, 'Object Layer');
-	console.log("Found entitites ", entityArr);
-	entityArr.forEach(createEntity);
-	
-	
 	var exitArr = findObjectsByType('exit', map, 'Object Layer');
 	exit = game.add.sprite(exitArr[0].x, exitArr[0].y - 28, 'exit');
 	game.physics.arcade.enable(exit);
@@ -325,9 +357,17 @@ function terminatePlayer(player){
 	player.animations.play('die');
 }
 
+function isContained(a,b){
+	return (a.x >= b.x && a.y >= b.y && a.x + a.width <= b.x + b.width && a.y + a.height <= b.y + b.height);
+}
+
 function collideWithHazard(player, hazard){
 	if (player.at_terminal_velocity){
 		terminatePlayer(player);
+		return;
+	}
+	if (hazard.body.touching === undefined || hazard.hazards === undefined){
+		console.warn("Something is not working right with hazard ", hazard);
 		return;
 	}
 	if (hazard.hazards.left && hazard.body.touching.left){
@@ -348,14 +388,31 @@ function collideWithHazard(player, hazard){
 	}
 }
 
+function touchCover(player, cover){
+		if (isContained(player.body, cover.body)){
+			player.covered = true;
+		} else {
+			player.covered = false;
+		}
+}
+
+function shouldCollideWithHazard(player, hazard){
+	if (player.covered == true){
+		return false;
+	}
+	
+	return true;
+}
+
 function update() {
 	if (player.body.velocity.y > TERMINAL_VELOCITY){
 		player.at_terminal_velocity = true;
 	}
 	game.physics.arcade.collide(player, solids, collideWithSolid);
 	game.physics.arcade.collide(player, exit, attemptExit);
-	game.physics.arcade.collide(player, entities, collideWithHazard);
+	game.physics.arcade.collide(player, entities, collideWithHazard, shouldCollideWithHazard);
 	game.physics.arcade.overlap(player, goals, collectGoal);
+	game.physics.arcade.overlap(player, covers, touchCover);
 	if (player.status == 'alive'){
 		if (isPlayerDown(player)){
 			player.body.velocity.x = 0;
@@ -413,6 +470,7 @@ function render() {
 
 //   game.debug.bodyInfo(player, 32, 460);
 //   game.debug.body(player);
+//   game.debug.body(covers.children[0]);
 //   game.debug.body(exit);
 }
 </script>
