@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="16" tileheight="16" backgroundcolor="#2f8f8f" nextobjectid="68">
- <tileset firstgid="1" name="Tiles" tilewidth="32" tileheight="32" tilecount="220" columns="20">
+ <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32" tilecount="220" columns="20">
   <image source="../tiles/tiles.png" trans="ff00ff" width="640" height="352"/>
   <tile id="103">
    <properties>
@@ -213,7 +213,7 @@
   <object id="45" gid="118" x="224" y="112" width="32" height="32">
    <properties>
     <property name="hazard" value="sides"/>
-    <property name="image" value="thorn"/>
+    <property name="image" value="tilesSprites"/>
     <property name="type" value="entity"/>
    </properties>
   </object>
@@ -225,11 +225,7 @@
     <property name="movementType" value="patrol"/>
     <property name="pistonY" type="int" value="160"/>
     <property name="type" value="entity"/>
-    <property name="wayPoint1X" type="int" value="96"/>
-    <property name="wayPoint1Y" type="int" value="192"/>
-    <property name="wayPoint2X" type="int" value="96"/>
-    <property name="wayPoint2Y" type="int" value="282"/>
-    <property name="waypoints" value="96,176,96,266"/>
+    <property name="waypoints" value="96,176,96,272"/>
    </properties>
   </object>
   <object id="58" gid="244" x="160" y="240" width="58" height="22">
@@ -240,11 +236,7 @@
     <property name="movementType" value="patrol"/>
     <property name="pistonY" type="int" value="160"/>
     <property name="type" value="entity"/>
-    <property name="wayPoint1X" type="int" value="160"/>
-    <property name="wayPoint1Y" type="int" value="282"/>
-    <property name="wayPoint2X" type="int" value="160"/>
-    <property name="wayPoint2Y" type="int" value="192"/>
-    <property name="waypoints" value="160,176,160,266"/>
+    <property name="waypoints" value="160,176,160,272"/>
    </properties>
   </object>
   <object id="59" gid="244" x="224" y="208" width="58" height="22">
@@ -255,11 +247,7 @@
     <property name="movementType" value="patrol"/>
     <property name="pistonY" type="int" value="160"/>
     <property name="type" value="entity"/>
-    <property name="wayPoint1X" type="int" value="224"/>
-    <property name="wayPoint1Y" type="int" value="282"/>
-    <property name="wayPoint2X" type="int" value="224"/>
-    <property name="wayPoint2Y" type="int" value="192"/>
-    <property name="waypoints" value="224,176,224,266"/>
+    <property name="waypoints" value="224,176,224,272"/>
    </properties>
   </object>
   <object id="60" gid="244" x="288" y="176" width="58" height="22">
@@ -270,11 +258,7 @@
     <property name="movementType" value="patrol"/>
     <property name="pistonY" type="int" value="160"/>
     <property name="type" value="entity"/>
-    <property name="wayPoint1X" type="int" value="288"/>
-    <property name="wayPoint1Y" type="int" value="282"/>
-    <property name="wayPoint2X" type="int" value="288"/>
-    <property name="wayPoint2Y" type="int" value="192"/>
-    <property name="waypoints" value="288,176,288,266"/>
+    <property name="waypoints" value="288,176,288,272"/>
    </properties>
   </object>
  </objectgroup>

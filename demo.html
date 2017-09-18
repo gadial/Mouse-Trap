@@ -248,14 +248,12 @@ function create() {
 	var tilemapData = game.cache.getTilemapData('map');
     var mapData = tilemapData.data;
 	game.stage.backgroundColor = mapData.backgroundcolor;
-	
-    game.physics.startSystem(Phaser.Physics.ARCADE);
 
     map = game.add.tilemap('map',TILE_SIZE,TILE_SIZE);
 	
     map.addTilesetImage('tiles');
 
-		entities = this.add.group();
+	entities = this.add.group();
 	entities.enableBody = true;
 	var entityArr = findObjectsByType('entity', map, 'Object Layer');
 	console.log("Found entitites ", entityArr);

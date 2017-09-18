@@ -97,7 +97,7 @@
                  "properties":
                     {
                      "hazard":"sides",
-                     "image":"thorn",
+                     "image":"tilesSprites",
                      "type":"entity"
                     },
                  "propertytypes":
@@ -126,11 +126,7 @@
                      "movementType":"patrol",
                      "pistonY":160,
                      "type":"entity",
-                     "wayPoint1X":96,
-                     "wayPoint1Y":192,
-                     "wayPoint2X":96,
-                     "wayPoint2Y":282,
-                     "waypoints":"96,176,96,266"
+                     "waypoints":"96,176,96,272"
                     },
                  "propertytypes":
                     {
@@ -140,10 +136,6 @@
                      "movementType":"string",
                      "pistonY":"int",
                      "type":"string",
-                     "wayPoint1X":"int",
-                     "wayPoint1Y":"int",
-                     "wayPoint2X":"int",
-                     "wayPoint2Y":"int",
                      "waypoints":"string"
                     },
                  "rotation":0,
@@ -166,11 +158,7 @@
                      "movementType":"patrol",
                      "pistonY":160,
                      "type":"entity",
-                     "wayPoint1X":160,
-                     "wayPoint1Y":282,
-                     "wayPoint2X":160,
-                     "wayPoint2Y":192,
-                     "waypoints":"160,176,160,266"
+                     "waypoints":"160,176,160,272"
                     },
                  "propertytypes":
                     {
@@ -180,10 +168,6 @@
                      "movementType":"string",
                      "pistonY":"int",
                      "type":"string",
-                     "wayPoint1X":"int",
-                     "wayPoint1Y":"int",
-                     "wayPoint2X":"int",
-                     "wayPoint2Y":"int",
                      "waypoints":"string"
                     },
                  "rotation":0,
@@ -206,11 +190,7 @@
                      "movementType":"patrol",
                      "pistonY":160,
                      "type":"entity",
-                     "wayPoint1X":224,
-                     "wayPoint1Y":282,
-                     "wayPoint2X":224,
-                     "wayPoint2Y":192,
-                     "waypoints":"224,176,224,266"
+                     "waypoints":"224,176,224,272"
                     },
                  "propertytypes":
                     {
@@ -220,10 +200,6 @@
                      "movementType":"string",
                      "pistonY":"int",
                      "type":"string",
-                     "wayPoint1X":"int",
-                     "wayPoint1Y":"int",
-                     "wayPoint2X":"int",
-                     "wayPoint2Y":"int",
                      "waypoints":"string"
                     },
                  "rotation":0,
@@ -246,11 +222,7 @@
                      "movementType":"patrol",
                      "pistonY":160,
                      "type":"entity",
-                     "wayPoint1X":288,
-                     "wayPoint1Y":282,
-                     "wayPoint2X":288,
-                     "wayPoint2Y":192,
-                     "waypoints":"288,176,288,266"
+                     "waypoints":"288,176,288,272"
                     },
                  "propertytypes":
                     {
@@ -260,10 +232,6 @@
                      "movementType":"string",
                      "pistonY":"int",
                      "type":"string",
-                     "wayPoint1X":"int",
-                     "wayPoint1Y":"int",
-                     "wayPoint2X":"int",
-                     "wayPoint2Y":"int",
                      "waypoints":"string"
                     },
                  "rotation":0,
@@ -314,7 +282,7 @@
          "imageheight":352,
          "imagewidth":640,
          "margin":0,
-         "name":"Tiles",
+         "name":"tiles",
          "spacing":0,
          "tilecount":220,
          "tileheight":32,

@@ -160,7 +160,7 @@
     <property name="type" value="exit"/>
    </properties>
   </object>
-  <object id="5" gid="221" x="256" y="304" width="56" height="48">
+  <object id="5" gid="221" x="432" y="368" width="56" height="48">
    <properties>
     <property name="type" value="player"/>
    </properties>
@@ -174,7 +174,7 @@
     <property name="movementType" value="patrol"/>
     <property name="speed" type="int" value="160"/>
     <property name="type" value="entity"/>
-    <property name="waypoints" value="0,320,416,320"/>
+    <property name="waypoints" value="0,368,416,368"/>
    </properties>
   </object>
   <object id="12" gid="260" x="144" y="160" width="30" height="26">
@@ -185,7 +185,7 @@
     <property name="movementType" value="patrol"/>
     <property name="speed" type="int" value="120"/>
     <property name="type" value="entity"/>
-    <property name="waypoints" value="144,144,192,64,240,144,288,64,336,144"/>
+    <property name="waypoints" value="144,160,192,80,240,160,288,80,336,160"/>
    </properties>
   </object>
   <object id="16" x="320" y="304" width="96" height="64">
