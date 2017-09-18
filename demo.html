@@ -14,7 +14,7 @@
 
 <script type="text/javascript">
 
-var sprite_images = ['juicero', 'piston', 'ball'];
+var sprite_images = ['juicero', 'piston', 'ball', 'teacup'];
 var sprite_sheets = {
 	'mouse': {width: 56, height: 50, animations: {
 		'left': [0, 1, 2, 3, 4, 5, 6, 7],
@@ -26,6 +26,13 @@ var sprite_sheets = {
 	'troll': {width: 64, height: 64, animations: {
 		'left': [0,1,2,3,4,5,6,7],
 		'right': [8,9,10,11,12,13,14,15]
+	}},
+	'cloud': {width: 62, height:30, animations:{
+		'stand': [0,1,2,3]
+	}},
+	'snail': {width: 48, height: 22, animations:{
+		'left': [0],
+		'right': [1]
 	}}
 }
 
@@ -44,7 +51,7 @@ function preload_sprites(){
 function preload() {
 
 	preload_sprites();
-    game.load.tilemap('map', 'assets/tilemaps/maps/level2.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('map', 'assets/tilemaps/maps/level3.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tilemaps/tiles/tiles.png');
 //	game.load.spritesheet('mouse', 'assets/sprites/mouse.png', 56, 50);
 //	game.load.spritesheet('exit', 'assets/sprites/exit.png', 32, 51);
@@ -71,6 +78,8 @@ var currentDataString;
 var covers;
 
 var TERMINAL_VELOCITY = 300;
+
+var platformCollision = {up: true, down: false, left: false, right: false};
 
 function findObjectsByType(targetType, tilemap, layer){
 	var result = [];
@@ -150,13 +159,23 @@ function parseWaypoints(s){
 	return waypoints;
 }
 
+function yFix(entity, y){
+	return (y - (entity.height - TILE_SIZE));
+}
+
+function fixWaypointsY(e){
+	for (var n = 0; n < e.waypoints.length; ++n){
+		e.waypoints[n].y = yFix(e,e.waypoints[n].y);
+	}
+}
+
 function createEntity(entity){
 	console.log("Creating entity ", entity);
 	var offset = 0;
 	if (entity.properties.image == 'tilesSprites'){
 		offset = entity.gid - 1;
 	}
-	e = entities.create(entity.x, entity.y - (entity.height - TILE_SIZE), entity.properties.image, offset);
+	e = entities.create(entity.x, yFix(entity, entity.y), entity.properties.image, offset);
 	e.properties = entity.properties;
 	e.body.immovable = true;
 	e.speed = 60; //Phaser default
@@ -165,11 +184,19 @@ function createEntity(entity){
 		e.animations.add('left', animations.left, 10, true);
 		e.animations.add('right', animations.right, 10, true);
 	}
+	if (entity.properties.animationType == 'stand'){
+		animations = sprite_sheets[entity.properties.image].animations
+		e.animations.add('stand', animations.left, 3, true);
+		e.animations.play('stand');
+	}
+	
 	if (entity.properties.speed !== undefined){
+		console.log("Seeting speed to ",entity.properties.speed);
 		e.speed = entity.properties.speed;
 	}
 	if (entity.properties.movementType == 'patrol'){
 		e.waypoints = parseWaypoints(entity.properties.waypoints);
+		fixWaypointsY(e); //the y coordinate of entities always has an annoying y coordinate offset
 		e.delta = 1;
 		var i = entity.properties.initialWaypoint;
 		if (i !== undefined && e.waypoints[i] !== undefined){
@@ -187,6 +214,15 @@ function createEntity(entity){
 	
 	if (entity.properties.hazard == 'sides'){
 		e.hazards = {left: true, right: true};
+	}
+	
+	if (entity.properties.hazard == 'allButAbove'){
+		e.hazards = {left: true, right: true, down: true};
+	}
+	
+	if (entity.properties.hazard == 'peacefulPlatform'){
+		e.hazards = {};
+		e.body.checkCollision = platformCollision;
 	}
 	
 	
@@ -230,14 +266,16 @@ function create() {
 	solids.enableBody = true;
 	addTilesToGroup(map, 'Solid Layer', solids);
 	addTilesToGroup(map, 'Platform Layer', solids, function(p){
-		p.body.checkCollision.down = false;
-		p.body.checkCollision.left = false;
-		p.body.checkCollision.right = false;
+		p.body.checkCollision = platformCollision;
+		//p.body.checkCollision.down = false;
+		//p.body.checkCollision.left = false;
+		//p.body.checkCollision.right = false;
 	});
 	addTilesToGroup(map, 'Sinking Platform Layer', solids, function(p){
-		p.body.checkCollision.down = false;
-		p.body.checkCollision.left = false;
-		p.body.checkCollision.right = false;
+		p.body.checkCollision = platformCollision;
+		//p.body.checkCollision.down = false;
+		//p.body.checkCollision.left = false;
+		//p.body.checkCollision.right = false;
 		p.body.drag.y = 25;
 		p.origin_y = p.y;
 		p.is_sinking = true;
@@ -423,7 +461,7 @@ function update() {
 			if (isPlayerDown(player)){
 				if (player.body.horizontalFacing == Phaser.RIGHT){
 					player.body.horizontalFacing = Phaser.LEFT;
-					player.body.setSize(26, 48, 0, 0);
+					player.body.setSize(20, 48, 0, 0);
 					player.body.x = player.body.x + 30;
 				}
 				player.animations.play('left');
@@ -436,7 +474,7 @@ function update() {
 			if (isPlayerDown(player)){
 				if (player.body.horizontalFacing == Phaser.LEFT){
 					player.body.horizontalFacing = Phaser.RIGHT;
-					player.body.setSize(26, 48, 30, 0);
+					player.body.setSize(20, 48, 30, 0);
 					player.body.x = player.body.x - 30;
 				}
 				player.animations.play('right');

@@ -160,7 +160,7 @@
     <property name="type" value="exit"/>
    </properties>
   </object>
-  <object id="5" gid="221" x="416" y="368" width="56" height="48">
+  <object id="5" gid="221" x="256" y="304" width="56" height="48">
    <properties>
     <property name="type" value="player"/>
    </properties>
