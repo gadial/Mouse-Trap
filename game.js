@@ -13,6 +13,7 @@ var cursors;
 var currentDataString;
 var covers;
 
+var MAX_LEVEL = 8;
 var TERMINAL_VELOCITY = 300;
 
 var platformCollision = {up: true, down: false, left: false, right: false};
@@ -78,6 +79,30 @@ function updatePatrol(){
 	}
 }
 
+function updateCycle(){
+	if (coordsCloseEnough(this,this.waypoints[this.currentWaypoint])){
+		if (this.currentWaypoint != this.waypoints.length - 1){
+			this.currentWaypoint++;
+		} else {
+			this.x = this.waypoints[0].x;
+			this.y = this.waypoints[0].y;
+			this.currentWaypoint = 1;
+		}
+		game.physics.arcade.moveToXY(this, this.waypoints[this.currentWaypoint].x, this.waypoints[this.currentWaypoint].y, this.speed);
+	}
+	if (this.properties.animationType == 'leftAndRight'){
+		if (this.body.deltaX() > 0){
+			this.animations.play('right');
+		} else {
+			this.animations.play('left');
+		}
+	}
+}
+
+function updateBounce(){
+	game.physics.arcade.collide(this, solids);
+}
+
 function parseWaypoints(s){
 	if (s === undefined){
 		return [];
@@ -130,7 +155,7 @@ function createEntity(entity){
 		console.log("Seeting speed to ",entity.properties.speed);
 		e.speed = entity.properties.speed;
 	}
-	if (entity.properties.movementType == 'patrol'){
+	if (entity.properties.movementType == 'patrol' || entity.properties.movementType == 'cycle'){
 		e.waypoints = parseWaypoints(entity.properties.waypoints);
 		fixWaypointsY(e); //the y coordinate of entities always has an annoying y coordinate offset
 		e.delta = 1;
@@ -138,10 +163,23 @@ function createEntity(entity){
 		if (i !== undefined && e.waypoints[i] !== undefined){
 			game.physics.arcade.moveToXY(e, e.waypoints[i].x, e.waypoints[i].y, e.speed);
 			e.currentWaypoint = i;
-			e.update = updatePatrol;
+			if (entity.properties.movementType == 'patrol'){
+				e.update = updatePatrol;
+			}
+			if (entity.properties.movementType == 'cycle'){
+				e.update = updateCycle;
+			}
 		} else {
 			console.warn("Problem with entity ", entity, ": seems like initalWaypoint is undefined")
 		}
+	}
+	
+	if (entity.properties.movementType == 'bounce'){
+		e.body.collideWorldBounds = true;
+        e.body.bounce.set(1);
+		e.body.velocity.setTo(-e.speed,-e.speed);
+		e.update = updateBounce;
+		e.body.immovable = false;
 	}
 	
 	if (entity.properties.hazard == 'all'){
@@ -394,6 +432,9 @@ function update() {
 		}
 		if (cursors.left.isDown)
 		{
+			if (game.ctrlKey.isDown){ //cheat!!!!!
+				GameState.previousLevel();
+			}
 			//  Move to the left
 			if (isPlayerDown(player)){
 				if (player.body.horizontalFacing == Phaser.RIGHT){
@@ -407,6 +448,9 @@ function update() {
 		}
 		else if (cursors.right.isDown)
 		{
+			if (game.ctrlKey.isDown){ //cheat!!!!!
+				GameState.nextLevel();
+			}
 			//  Move to the right
 			if (isPlayerDown(player)){
 				if (player.body.horizontalFacing == Phaser.LEFT){
@@ -463,7 +507,14 @@ GameState = {
   },
   
   nextLevel: function(){
-    this.game.state.start('Game', true, false, this.level + 1);
+	  if (this.level < MAX_LEVEL){
+		this.game.state.start('Game', true, false, this.level + 1);
+	  }
+  },
+  
+  previousLevel: function(){
+	  if (this.level > 1){
+		this.game.state.start('Game', true, false, this.level - 1);
+	  }
   }
-
 };

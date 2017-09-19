@@ -13,13 +13,28 @@ var sprite_sheets = {
 		'left': [0,1,2,3,4,5,6,7],
 		'right': [8,9,10,11,12,13,14,15]
 	}},
-	'cloud': {width: 62, height:30, animations:{
+	'cloud': {width: 62, height: 30, animations:{
 		'stand': [0,1,2,3]
 	}},
 	'snail': {width: 48, height: 22, animations:{
 		'left': [0],
 		'right': [1]
-	}}
+	}},
+	'clown': {width: 64, height: 72, animations:{
+		'stand': [0,1,2]
+	}},
+	'insect': {width: 64, height: 60, animations:{
+		'stand': [0,1,2,3]
+	}},
+	'ghost': {width: 54, height: 54, animations:{
+		'stand': [0,1,2]
+	}},
+	'skull': {width: 50, height: 60, animations:{
+		'stand': [0,1,2,3]
+	}},
+	'fish': {width: 64, height: 30, animations:{
+		'stand': [0,1,2]
+	}},
 }
 
 function preload_sprites(){
@@ -43,6 +58,7 @@ PreloadState = {
 	game.load.spritesheet("tilesSprites", "assets/tilemaps/tiles/tiles.png", 32, 32);
   },
   create: function() {
-    this.state.start('Game', true, false, 2);
+	game.ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
+    this.state.start('Game', true, false, 7);
   }
 };
