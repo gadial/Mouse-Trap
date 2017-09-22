@@ -41,6 +41,9 @@ var sprite_sheets = {
 	'circle': {width: 38, height: 38, animations:{
 		'stand': [0,1,2,3]
 	}},
+	'spider': {width: 62, height: 28, animations:{
+		'stand': [0,1,2,3]
+	}},
 }
 
 function preload_sprites(){
@@ -65,6 +68,6 @@ PreloadState = {
   },
   create: function() {
 	game.ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-    this.state.start('Game', true, false, 9);
+    this.state.start('Game', true, false, 10);
   }
 };
