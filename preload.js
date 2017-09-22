@@ -35,6 +35,12 @@ var sprite_sheets = {
 	'fish': {width: 64, height: 30, animations:{
 		'stand': [0,1,2]
 	}},
+	'cheese': {width: 62, height: 62, animations:{
+		'stand': [0,1,2,3]
+	}},
+	'circle': {width: 38, height: 38, animations:{
+		'stand': [0,1,2,3]
+	}},
 }
 
 function preload_sprites(){
@@ -59,6 +65,6 @@ PreloadState = {
   },
   create: function() {
 	game.ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-    this.state.start('Game', true, false, 7);
+    this.state.start('Game', true, false, 9);
   }
 };

@@ -12,6 +12,7 @@ var goal_count = 0;
 var cursors;
 var currentDataString;
 var covers;
+var boundingBoxes;
 
 var MAX_LEVEL = 8;
 var TERMINAL_VELOCITY = 300;
@@ -100,7 +101,8 @@ function updateCycle(){
 }
 
 function updateBounce(){
-	game.physics.arcade.collide(this, solids);
+//	game.physics.arcade.collide(this, solids);
+	game.physics.arcade.collide(this, boundingBoxes);
 }
 
 function parseWaypoints(s){
@@ -177,7 +179,7 @@ function createEntity(entity){
 	if (entity.properties.movementType == 'bounce'){
 		e.body.collideWorldBounds = true;
         e.body.bounce.set(1);
-		e.body.velocity.setTo(-e.speed,-e.speed);
+		e.body.velocity.setTo(e.speed,e.speed);
 		e.update = updateBounce;
 		e.body.immovable = false;
 	}
@@ -227,6 +229,16 @@ function create() {
 	
     map.addTilesetImage('tiles');
 
+	boundingBoxes = this.add.group();
+	boundingBoxes.enableBody = true;
+	var boxesArr = findObjectsByType('boundingBox', map, 'Object Layer');
+	boxesArr.forEach(function(box){
+		b = boundingBoxes.create(box.x, box.y + TILE_SIZE);
+		b.body.height = box.height;
+		b.body.width = box.width;
+		b.body.immovable = true;
+	});
+	
 	entities = this.add.group();
 	entities.enableBody = true;
 	var entityArr = findObjectsByType('entity', map, 'Object Layer');
@@ -239,15 +251,9 @@ function create() {
 	addTilesToGroup(map, 'Solid Layer', solids);
 	addTilesToGroup(map, 'Platform Layer', solids, function(p){
 		p.body.checkCollision = platformCollision;
-		//p.body.checkCollision.down = false;
-		//p.body.checkCollision.left = false;
-		//p.body.checkCollision.right = false;
 	});
 	addTilesToGroup(map, 'Sinking Platform Layer', solids, function(p){
 		p.body.checkCollision = platformCollision;
-		//p.body.checkCollision.down = false;
-		//p.body.checkCollision.left = false;
-		//p.body.checkCollision.right = false;
 		p.body.drag.y = 25;
 		p.origin_y = p.y;
 		p.is_sinking = true;
