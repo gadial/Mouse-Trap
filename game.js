@@ -12,9 +12,10 @@ var goal_count = 0;
 var cursors;
 var currentDataString;
 var covers;
+var jumpPads;
 var boundingBoxes;
 
-var MAX_LEVEL = 8;
+var MAX_LEVEL = 11;
 var TERMINAL_VELOCITY = 300;
 
 var platformCollision = {up: true, down: false, left: false, right: false};
@@ -61,6 +62,17 @@ function coordsCloseEnough(a,b){
 	return closeEnough(a.x, a.y, b.x, b.y);
 }
 
+function createExplosion(x,y){
+	e = entities.create(x,y,'explosion');
+	e.body.immovable = true;
+	animationSpeed = 10; //default
+	animations = sprite_sheets['explosion'].animations
+	e.animations.add('stand', animations.stand, animationSpeed, false);
+	e.hazards = {left: true, right: true, up: true, down: true};
+	e.animations.play('stand');
+	e.animations.currentAnim.onComplete.add(function() {e.kill()});
+}
+
 function updatePatrol(){
 //	console.log(this.properties.image, " at ", [this.x, this.y]);
 	if (coordsCloseEnough(this,this.waypoints[this.currentWaypoint])){
@@ -85,6 +97,9 @@ function updateCycle(){
 		if (this.currentWaypoint != this.waypoints.length - 1){
 			this.currentWaypoint++;
 		} else {
+			if (this.properties.explodes){
+				createExplosion(this.x, this.y);
+			}
 			this.x = this.waypoints[0].x;
 			this.y = this.waypoints[0].y;
 			this.currentWaypoint = 1;
@@ -142,14 +157,18 @@ function createEntity(entity){
 	e.properties = entity.properties;
 	e.body.immovable = true;
 	e.speed = 60; //Phaser default
+	animationSpeed = 10; //default
+	if (entity.properties.animationSpeed != undefined){
+		animationSpeed = entity.properties.animationSpeed;
+	}
 	if (entity.properties.animationType == 'leftAndRight'){
 		animations = sprite_sheets[entity.properties.image].animations
-		e.animations.add('left', animations.left, 10, true);
-		e.animations.add('right', animations.right, 10, true);
+		e.animations.add('left', animations.left, animationSpeed, true);
+		e.animations.add('right', animations.right, animationSpeed, true);
 	}
 	if (entity.properties.animationType == 'stand'){
 		animations = sprite_sheets[entity.properties.image].animations
-		e.animations.add('stand', animations.left, 3, true);
+		e.animations.add('stand', animations.stand, animationSpeed, true);
 		e.animations.play('stand');
 	}
 	
@@ -278,6 +297,18 @@ function create() {
 		console.log("cSprite created: ", cSprite);
 	});
 	
+	//TODO: I don't think we need a separate group for jump pads
+	jumpPads = this.add.group();
+	jumpPads.enableBody = true;
+	var padsArr = findObjectsByType('jumpPad', map, 'Object Layer');
+	padsArr.forEach(function(pad){
+		p = jumpPads.create(pad.x, pad.y + TILE_SIZE);
+		p.body.height = pad.height;
+		p.body.width = pad.width;
+		p.body.immovable = true;
+		p.body.checkCollision = platformCollision;
+		p.properties = pad.properties;
+	});
 
 	var exitArr = findObjectsByType('exit', map, 'Object Layer');
 	exit = game.add.sprite(exitArr[0].x, exitArr[0].y - 28, 'exit');
@@ -390,19 +421,15 @@ function collideWithHazard(player, hazard){
 		return;
 	}
 	if (hazard.hazards.left && hazard.body.touching.left){
-		console.log("Kill from left!");
 		terminatePlayer(player)
 	}
 	if (hazard.hazards.right && hazard.body.touching.right){
-		console.log("Kill from right!");
 		terminatePlayer(player)
 	}
 	if (hazard.hazards.up && hazard.body.touching.up){
-		console.log("Kill from up!");
 		terminatePlayer(player)
 	}
 	if (hazard.hazards.down && hazard.body.touching.down){
-		console.log("Kill from down!");
 		terminatePlayer(player)
 	}
 }
@@ -423,15 +450,24 @@ function shouldCollideWithHazard(player, hazard){
 	return true;
 }
 
+function touchJumpPad(player, pad){
+	if (player.body.velocity.x != 0){
+		player.body.velocity.y = -pad.properties.boost;
+	}
+}
+
 function update() {
 	if (player.body.velocity.y > TERMINAL_VELOCITY){
 		player.at_terminal_velocity = true;
 	}
+	game.physics.arcade.collide(player, jumpPads, touchJumpPad);
 	game.physics.arcade.collide(player, solids, collideWithSolid);
 	game.physics.arcade.collide(player, exit, attemptExit);
 	game.physics.arcade.collide(player, entities, collideWithHazard, shouldCollideWithHazard);
 	game.physics.arcade.overlap(player, goals, collectGoal);
 	game.physics.arcade.overlap(player, covers, touchCover);
+	
+	
 	if (player.status == 'alive'){
 		if (isPlayerDown(player)){
 			player.body.velocity.x = 0;

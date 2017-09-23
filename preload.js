@@ -44,6 +44,12 @@ var sprite_sheets = {
 	'spider': {width: 62, height: 28, animations:{
 		'stand': [0,1,2,3]
 	}},
+	'rocket': {width: 50, height: 64, animations:{
+		'stand': [0,1,2,3]
+	}},
+	'explosion': {width: 60, height: 50, animations:{
+		'stand': [0,1,2,3,4,5]
+	}},
 }
 
 function preload_sprites(){
@@ -51,7 +57,6 @@ function preload_sprites(){
 		game.load.image(s,'assets/sprites/' + s + '.png');
 	});
 	for (var s in sprite_sheets){
-		console.log("Adding sprite ",s);
 		game.load.spritesheet(s,'assets/sprites/' + s + '.png', sprite_sheets[s].width, sprite_sheets[s].height);
 	}	
 }
@@ -68,6 +73,6 @@ PreloadState = {
   },
   create: function() {
 	game.ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-    this.state.start('Game', true, false, 10);
+    this.state.start('Game', true, false, 11);
   }
 };
