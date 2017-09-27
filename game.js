@@ -166,6 +166,16 @@ function createEntity(entity){
 		e.animations.add('left', animations.left, animationSpeed, true);
 		e.animations.add('right', animations.right, animationSpeed, true);
 	}
+	if (entity.properties.animationType == 'left'){
+		animations = sprite_sheets[entity.properties.image].animations
+		e.animations.add('left', animations.left, animationSpeed, true);
+		e.animations.play('left');
+	}
+	if (entity.properties.animationType == 'right'){
+		animations = sprite_sheets[entity.properties.image].animations
+		e.animations.add('right', animations.right, animationSpeed, true);
+		e.animations.play('right');
+	}
 	if (entity.properties.animationType == 'stand'){
 		animations = sprite_sheets[entity.properties.image].animations
 		e.animations.add('stand', animations.stand, animationSpeed, true);

@@ -20,6 +20,10 @@ var sprite_sheets = {
 		'left': [0],
 		'right': [1]
 	}},
+	'glove': {width: 60, height: 38, animations:{
+		'left': [0],
+		'right': [1]
+	}},
 	'clown': {width: 64, height: 72, animations:{
 		'stand': [0,1,2]
 	}},
@@ -50,6 +54,12 @@ var sprite_sheets = {
 	'explosion': {width: 60, height: 50, animations:{
 		'stand': [0,1,2,3,4,5]
 	}},
+	'witch': {width: 64, height: 64, animations:{
+		'stand': [0,1,2,3]
+	}},
+	'seagull': {width: 62, height: 28, animations:{
+		'stand': [0,1,2,3]
+	}},
 }
 
 function preload_sprites(){
@@ -73,6 +83,6 @@ PreloadState = {
   },
   create: function() {
 	game.ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-    this.state.start('Game', true, false, 11);
+    this.state.start('Game', true, false, 13);
   }
 };
