@@ -60,6 +60,9 @@ var sprite_sheets = {
 	'seagull': {width: 62, height: 28, animations:{
 		'stand': [0,1,2,3]
 	}},
+	'egg': {width: 76, height: 30, animations:{
+		'stand': [0,1,2,3]
+	}},
 }
 
 function preload_sprites(){
@@ -83,6 +86,6 @@ PreloadState = {
   },
   create: function() {
 	game.ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-    this.state.start('Game', true, false, 13);
+    this.state.start('Game', true, false, 14);
   }
 };
