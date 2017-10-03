@@ -1,6 +1,6 @@
 //setting game configuration and loading the assets for the loading screen
 
-var sprite_images = ['juicero', 'piston', 'ball', 'teacup'];
+var sprite_images = ['juicero', 'piston', 'ball', 'teacup', 'pusher'];
 var sprite_sheets = {
 	'mouse': {width: 56, height: 50, animations: {
 		'left': [0, 1, 2, 3, 4, 5, 6, 7],
@@ -63,6 +63,16 @@ var sprite_sheets = {
 	'egg': {width: 76, height: 30, animations:{
 		'stand': [0,1,2,3]
 	}},
+	'tomatoman': {width: 32, height: 34, animations:{
+		'stand': [0,1,2,3]
+	}},
+	'toiletpaper': {width: 64, height: 38, animations:{
+		'stand': [0,1,2,3]
+	}},
+	'penguin': {width: 32, height: 46, animations:{
+		'left': [3,4,5],
+		'right': [0,1,2]
+	}},
 }
 
 function preload_sprites(){
@@ -86,6 +96,6 @@ PreloadState = {
   },
   create: function() {
 	game.ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-    this.state.start('Game', true, false, 14);
+    this.state.start('Game', true, false, 19);
   }
 };

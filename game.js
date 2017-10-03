@@ -206,9 +206,18 @@ function createEntity(entity){
 	}
 	
 	if (entity.properties.movementType == 'bounce'){
-		e.body.collideWorldBounds = true;
+//		e.body.collideWorldBounds = true;
         e.body.bounce.set(1);
-		e.body.velocity.setTo(e.speed,e.speed);
+		switch(e.properties.initialDirection) {
+			case "downLeft": e.body.velocity.setTo(e.speed,e.speed); break;
+			case "down": e.body.velocity.setTo(0,e.speed); break;
+			case "downRight": e.body.velocity.setTo(-e.speed,e.speed); break;
+			case "upLeft": e.body.velocity.setTo(e.speed,-e.speed); break;
+			case "up": e.body.velocity.setTo(0,-e.speed); break;
+			case "upRight": e.body.velocity.setTo(-e.speed,-e.speed); break;
+			case "left": e.body.velocity.setTo(-e.speed,0); break;
+			case "right": e.body.velocity.setTo(e.speed,0); break;
+		}
 		e.update = updateBounce;
 		e.body.immovable = false;
 	}
@@ -243,13 +252,24 @@ function createEntity(entity){
 		}
 	}
 	
+	if (entity.properties.image == 'pusher'){ //TODO: not a good way to check this!
+		//tileSprite = game.add.tileSprite(e.x + 16, entity.properties.pistonY, 16, 10, 'piston');
+		piston = game.add.tileSprite(e.x + 22, entity.properties.pistonY, 16, 10, 'piston');
+		entities.add(piston);
+		piston.hazards = {left: true, right: true, up: true, down: true};
+		piston.entity = e;
+		piston.body.immovable = true;
+		piston.update = function() {
+			this.y = this.entity.y + TILE_SIZE;
+			this.height = this.entity.properties.pistonY - this.entity.y - TILE_SIZE;
+			this.body.height = this.entity.properties.pistonY - this.entity.y - TILE_SIZE;
+		}
+	}
+	
 	console.log("Done creating ",e);
 }
 	
 function create() {
-
-	//game.stage.backgroundColor = '#2F8F8F';
-
 	var tilemapData = game.cache.getTilemapData('map');
     var mapData = tilemapData.data;
 	game.stage.backgroundColor = mapData.backgroundcolor;
