@@ -219,7 +219,7 @@ function createEntity(entity){
 			case "right": e.body.velocity.setTo(e.speed,0); break;
 		}
 		e.update = updateBounce;
-		e.body.immovable = false;
+		e.body.immovable = true;
 	}
 	
 	if (entity.properties.hazard == 'all'){
