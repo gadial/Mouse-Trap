@@ -79,6 +79,9 @@ var sprite_sheets = {
 	'orangeman': {width: 32, height: 40, animations:{
 		'stand': [0,1,2]
 	}},
+	'jellyfish': {width: 62, height: 60, animations:{
+		'stand': [0,1,2]
+	}},
 }
 
 function preload_sprites(){
@@ -102,6 +105,6 @@ PreloadState = {
   },
   create: function() {
 	game.ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-    this.state.start('Game', true, false, 22);
+    this.state.start('Game', true, false, 24);
   }
 };

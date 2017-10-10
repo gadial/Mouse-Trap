@@ -364,6 +364,27 @@
                  "width":32,
                  "x":160,
                  "y":256
+                }, 
+                {
+                 "height":16,
+                 "id":188,
+                 "name":"",
+                 "properties":
+                    {
+                     "boost":250,
+                     "type":"jumpPad"
+                    },
+                 "propertytypes":
+                    {
+                     "boost":"int",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":192,
+                 "y":368
                 }],
          "opacity":1,
          "properties":
@@ -404,7 +425,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":188,
+ "nextobjectid":189,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.0.3",

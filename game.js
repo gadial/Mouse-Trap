@@ -96,6 +96,13 @@ function updateCycle(){
 	if (coordsCloseEnough(this,this.waypoints[this.currentWaypoint])){
 		if (this.currentWaypoint != this.waypoints.length - 1){
 			this.currentWaypoint++;
+			if (this.properties.phasing){ //phasing means jumping instead of going in a certain direction (ghost in level 24)
+				if(this.properties.phasing == 'left' && this.x > this.waypoints[this.currentWaypoint].x){
+					this.x = this.waypoints[this.currentWaypoint].x;
+					this.y = this.waypoints[this.currentWaypoint].y;
+					this.currentWaypoint++;
+				}
+			}
 		} else {
 			if (this.properties.explodes){
 				createExplosion(this.x, this.y);
@@ -117,7 +124,9 @@ function updateCycle(){
 
 function updateBounce(){
 //	game.physics.arcade.collide(this, solids);
+	this.body.immovable = false;
 	game.physics.arcade.collide(this, boundingBoxes);
+	this.body.immovable = true;
 }
 
 function parseWaypoints(s){
@@ -219,7 +228,7 @@ function createEntity(entity){
 			case "right": e.body.velocity.setTo(e.speed,0); break;
 		}
 		e.update = updateBounce;
-		e.body.immovable = true;
+		e.body.immovable = false;
 	}
 	
 	if (entity.properties.hazard == 'all'){
